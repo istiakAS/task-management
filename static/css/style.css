@@ -1,0 +1,19 @@
+.lal-bg{
+    background-color: red;
+    color: white;
+    text-align: center;
+}
+.img{
+    width: 600px;
+    height: 600px;
+    object-fit: cover;
+    margin: 0 auto;
+}
+.button{
+    background-color: blue ;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
