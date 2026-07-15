@@ -7,14 +7,15 @@
 </head>
 <body>
     <div>
-        <ul>
-            {% for task in tasks %}
-                <li>{{ task.title }}</li>
+        <ol>
+            {% for project in projects %}
+                <li>
+                    <p>{{ project.name }}</p>
+                    <p>Number of Tasks: {{ project.num_tasks }}</p>
+                </li>
             {% endfor %}
-        </ul>
-    </div>
-    <div>
-        <li>{{ task3.title }}~</li>
+        </ol>
+       
     </div>
 </body>
 </html>

@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from tasks.form import TaskForm, TaskModelForm
-from .models import Task
+from .models import Task, TaskDetails, Project
+from datetime import date
+from django.db.models import Count, Avg, Sum, Min, Max
 
 # Create your views here.
 def manager_dashboard(request):
@@ -34,8 +36,23 @@ def create_task(request):
     return render(request, "task_from.html", context)
 
 def view_task(request):
-    tasks = Task.objects.all()  # get data from DB
+    # Show the status that are completed 
+    # tasks = Task.objects.filter(status="COMPLETED")  # get data from DB
 
-    #retrive a specific task
-    task3 = Task.objects.get(id=3)
-    return render(request, "show_task.html", {"tasks": tasks, "task3": task3})  # pass data to template
+    # show today date 
+    # tasks = Task.objects.filter(due_date=date.today())   # get data from DB
+
+    # tasks = TaskDetails.objects.exclude(priority="L")
+    # tasks = TaskDetails.objects.select_related('task').all()
+    # tasks = Task.objects.select_related('project').all() # get data from DB
+
+    # tasks = Project.objects.prefetch_related('task_set').all()  # get data from DB
+
+
+    # tasks = Task.objects.prefetch_related('assigned_to').all()  # get data from DB
+
+    """Aggregation """
+
+    projects = Project.objects.annotate(num_tasks=Count('task')).order_by('num_tasks')  # get data from DB
+
+    return render(request, "show_task.html", {"projects": projects})  # pass data to template
