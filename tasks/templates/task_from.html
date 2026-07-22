@@ -7,18 +7,21 @@
     <title>Document</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
-<body class="mx-1">
-    <div class="flex flex-col items-center justify-center">
+<body style="margin-top: 30px">
+    <div class="flex justify-center mt-8">
         <div>
-            {% if message %}
-                <p>{{ message }}</p>
+            {% if messages %}
+                {% for message in messages %}
+                <div class="px-2 py-1 {% if message.tags == 'success' %}bg-green-500{% endif %} ">{{ message }}</div>
+                {% endfor %}
             {% endif %}
         </div>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="bg-blue-500 text-white py-1 px-3 rounded">submit</button>
-        </form>
+            <form method="POST">
+                {% csrf_token %}
+                {{ task_form }}
+                {{ task_detail_form }}
+                <button type="submit" class="mb-4 bg-blue-500 text-white py-1 px-3 rounded">submit</button>
+            </form>
     </div>
 
 </body>

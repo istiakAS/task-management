@@ -1,6 +1,6 @@
 
 from django import forms
-from tasks.models import Task
+from tasks.models import Task, TaskDetails
 
 class TaskForm(forms.Form):
     title = forms.CharField(max_length=250, label="Task Title")
@@ -73,5 +73,15 @@ class TaskModelForm(StyledFormMixin, forms.ModelForm):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, **kwargs)
         self.applied_styled_widgets()
+
+class TaskDetailModelForm(StyledFormMixin, forms.ModelForm):
+    class Meta:
+        model = TaskDetails
+        fields = ['priority', 'notes']
+    
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, **kwargs)
+        self.applied_styled_widgets()
+
         
 

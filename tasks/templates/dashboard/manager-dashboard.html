@@ -12,125 +12,47 @@
           </div>
           <!-- task items -->
           <div class="divide-y divide-gray-100">
-            <div class="grid grid-cols-4 p-4 gap-4 items-center">
+           {% for task in tasks %}
+             <div class="grid grid-cols-4 p-4 gap-4 items-center">
   
               <!-- TASK TITLE -->
               <div class="flex items-center gap-2">
                 <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>TEST LOW TASK</span>
+                <span>{{ task.title }}</span>
+                <a href="{% url "update-task" task.id %}" class='px-2 py-1 bg-green-500 text-white rounded'>Edit</a>
+                
+                <form action="{% url 'delete-task' task.id %}" method="POST">
+                  {% csrf_token %}
+                  <button type="submit" class='px-2 py-1 bg-red-500 text-white rounded'>Delete</button>
+                </form>
               </div>
 
               <!-- PRIORITY -->
               <div>
                 <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm">
-                  LOW
+                  {{task.details.get_priority_display}}
                 </span>
               </div>
 
               <!-- TEAM -->
               <div class="flex -space-x-2">
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">CA</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">CA</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">CA</div>
+                {% for emp in task.assigned_to.all %}
+                  <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    {{ emp.name|slice:":1" }}
+                  </div>
+                {% endfor %}
+                
               </div>
 
               <!-- CREATED AT -->
               <div>
-                <span class="text-gray-500">9 months ago</span>
+                <span class="text-gray-500">{{ task.created_at|timesince }}</span>
               </div>
 
             </div>
+           {% endfor %}
           </div>
-          <div class="divide-y divide-gray-100">
-            <div class="grid grid-cols-4 p-4 gap-4 items-center">
-  
-              <!-- TASK TITLE -->
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 bg-yellow-300 rounded-full"></div>
-                <span>TEST LOW TASK</span>
-              </div>
-
-              <!-- PRIORITY -->
-              <div>
-                <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm">
-                  Normal
-                </span>
-              </div>
-
-              <!-- TEAM -->
-              <div class="flex -space-x-2">
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">CA</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">AJ</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">JS</div>
-              </div>
-
-              <!-- CREATED AT -->
-              <div>
-                <span class="text-gray-500">9 months ago</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="divide-y divide-gray-100">
-            <div class="grid grid-cols-4 p-4 gap-4 items-center">
-  
-              <!-- TASK TITLE -->
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <span>TEST LOW TASK</span>
-              </div>
-
-              <!-- PRIORITY -->
-              <div>
-                <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm">
-                  High
-                </span>
-              </div>
-
-              <!-- TEAM -->
-              <div class="flex -space-x-2">
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">AJ</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">EV</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">B</div>
-              </div>
-
-              <!-- CREATED AT -->
-              <div>
-                <span class="text-gray-500">9 months ago</span>
-              </div>
-
-            </div>
-          </div>
-          <div class="divide-y divide-gray-100">
-            <div class="grid grid-cols-4 p-4 gap-4 items-center">
-  
-              <!-- TASK TITLE -->
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>TEST LOW TASK</span>
-              </div>
-
-              <!-- PRIORITY -->
-              <div>
-                <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm">
-                  LOW
-                </span>
-              </div>
-
-              <!-- TEAM -->
-              <div class="flex -space-x-2">
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">CA</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">CA</div>
-                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">CA</div>
-              </div>
-
-              <!-- CREATED AT -->
-              <div>
-                <span class="text-gray-500">9 months ago</span>
-              </div>
-
-            </div>
-          </div>
+        
           </div>
         </div>
 
