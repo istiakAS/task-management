@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from tasks.form import TaskForm, TaskModelForm, TaskDetailModelForm
+from tasks.forms import TaskForm, TaskModelForm, TaskDetailModelForm
 from .models import Task, TaskDetails, Project
 from datetime import date
 from django.db.models import Count, Avg, Sum, Min, Max, Q

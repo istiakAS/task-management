@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -60,3 +62,15 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+#signals
+
+@receiver(post_save, sender=Task)
+def notify_task_creation(sender, instance, created, **kwargs):
+    if created:
+        print('sender', sender)
+        print('instance', instance)
+        print(kwargs)
+        instance.is_completed = True 
+        instance.save() # Save the instance to update the is_completed field
+
