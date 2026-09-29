@@ -1,19 +1,173 @@
-.lal-bg{
-    background-color: red;
+/* =========================
+   Global Theme
+========================= */
+
+.first {
+    background: linear-gradient(
+        135deg,
+        #0f172a 0%,
+        #172554 50%,
+        #1e3a8a 100%
+    );
     color: white;
-    text-align: center;
 }
-.img{
-    width: 600px;
-    height: 600px;
-    object-fit: cover;
-    margin: 0 auto;
+
+
+/* =========================
+   Hero Section
+========================= */
+
+.first {
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
 }
-.button{
-    background-color: blue ;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+
+.first .container {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================
+   Login Card
+========================= */
+
+.login-bg{
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.login-bg::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.35),
+            rgba(0,0,0,0.35)
+        ),
+        url("/media/tasks_asset/login.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    filter: blur(4px);
+    transform: scale(1.05);
+
+    z-index: -1;
+}
+
+.login-card{
+    width: 400px;
+    padding: 30px;
+
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 20px;
+
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.signin-btn{
+    background: rgba(110, 138, 182, 0.08);
+    color: #93c5fd;
+
+    border: 2px solid #93c5fd;
+
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.signin-btn:hover{
+    background: rgba(147,197,253,0.2);
+    box-shadow: 0 0 20px rgba(147,197,253,0.4);
+}
+
+/* =========================
+   Role Cards
+========================= */
+
+.role-card {
+    position: relative;
     cursor: pointer;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    border-radius: 16px;
+
+    transition: all 0.4s ease;
+}
+
+.role-card h3 {
+    color: #ffffff;
+    transition: all 0.4s ease;
+}
+
+.role-card ul {
+    color: #cbd5e1;
+}
+
+.role-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25);
+    border-color: #60a5fa;
+}
+
+.role-card:hover h3 {
+    color: #60a5fa;
+}
+
+
+/* =========================
+   Text Animation
+========================= */
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-text {
+    animation: fadeUp 1s ease forwards;
+}
+
+
+/* =========================
+   Button Animation
+========================= */
+
+.btn-primary {
+    transition: all 0.4s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+footer {
+    background: #0b1120;
 }

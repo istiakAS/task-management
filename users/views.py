@@ -1,13 +1,23 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-from users.forms import CustomRegistrationForm
+from users.forms import CustomRegistrationForm, AssignRoleForm, CreateGroupForm, CustomPasswordChangeForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm
 from django.contrib import messages
 from users.forms import LoginForm
 from django.contrib.auth.tokens import default_token_generator
-
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Prefetch
+from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView
+from django.views.generic import TemplateView
+from django.urls import reverse_lazy
 # Create your views here.
+
+# Test for user
+def is_admin(user):
+    return user.groups.filter(name='Admin').exists()
+
+
 def sign_up(request):
 
     if request.method == 'GET':
@@ -38,6 +48,39 @@ def sign_in(request):
             return redirect('home')
     return render(request, 'registration/login.html', {'form': form})
 
+# def sign_in(request):
+#     form = LoginForm()
+
+#     if request.method == 'POST':
+#         form = LoginForm(request, data=request.POST)
+
+#         if form.is_valid():
+#             user = form.get_user()
+#             login(request, user)
+
+#             if user.groups.filter(name='Admin').exists():
+#                 return redirect('dashboard')
+
+#             elif user.groups.filter(name='Manager').exists():
+#                 return redirect('manager-dashboard')
+
+#             else:
+#                 return redirect('user-dashboard')
+
+#     return render(request, 'registration/login.html', {'form': form})
+
+class CustomLoginView(LoginView):
+    form_class = LoginForm
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next')
+        return next_url if next_url else super().get_success_url()
+
+class ChangePassword(PasswordChangeView):
+    template_name = 'accounts/password_change.html'
+    form_class = CustomPasswordChangeForm
+
+@login_required
 def sign_out(request):
     if request.method == 'POST':
         logout(request)
@@ -54,3 +97,92 @@ def activate_user(request, user_id, token):
             return HttpResponse("Activation link is invalid!")
     except User.DoesNotExist:
         return HttpResponse("User not valid")
+
+@user_passes_test(is_admin, login_url='no_permissions')
+def admin_dashboard(request):
+    users = User.objects.prefetch_related(
+        Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
+    ).all()
+
+    for user in users:
+        if user.all_groups:
+            user.group_name = user.all_groups[0].name
+        else:
+            user.group_name = 'No Group Assigned'        
+    return render(request, 'admin/dashboard.html', {'users': users})
+
+@user_passes_test(is_admin, login_url='no_permissions')
+def assign_role(request, user_id):
+    user = User.objects.get(id=user_id)
+    form = AssignRoleForm()
+
+    if request.method == 'POST':
+        form = AssignRoleForm(request.POST)
+        if form.is_valid():
+            role = form.cleaned_data.get('role')
+            user.groups.clear()  # remove old roles
+            user.groups.add(role)
+            messages.success(request, f'Role {role.name} assigned to {user.username} successfully!')
+            return redirect('admin-dashboard')
+    return render(request, 'admin/assign_role.html', {'form': form, 'user': user})
+
+@user_passes_test(is_admin, login_url='no_permissions')
+def create_group(request):
+    form = CreateGroupForm()
+    if request.method =='POST':
+        form = CreateGroupForm(request.POST)
+
+        if form.is_valid():
+            group = form.save()
+            messages.success(request, f'Group {group.name} created successfully!')
+            return redirect('create-group')
+    return render(request, 'admin/create_group.html', {'form': form})
+
+@user_passes_test(is_admin, login_url='no_permissions')
+def group_list(request):
+    groups = Group.objects.prefetch_related('permissions').all()
+    return render(request, 'admin/group_list.html', {'groups': groups})
+
+
+class ProfileView(TemplateView):
+    template_name = 'accounts/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        context['username'] = user.username 
+        context['email'] = user.email 
+        context['name'] = user.get_full_name() 
+        context['member_since'] = user.date_joined 
+        context['last_login'] = user.last_login 
+
+        return context 
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm 
+    template_name = 'registration/reset_password.html'
+    success_url = reverse_lazy('sign_in') 
+    html_email_template_name = 'registration/reset_email.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['protocol'] = 'https' if self.request.is_secure() else 'http' 
+        context['domain'] = self.request.get_host()
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, 'A Resent email sent. Please check your email')
+
+        return super().form_valid(form)
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = CustomPasswordResetConfirmForm 
+    template_name = 'registration/reset_password.html'
+    success_url = reverse_lazy('sign_in') 
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Password reset successfully')
+
+        return super().form_valid(form)
+    

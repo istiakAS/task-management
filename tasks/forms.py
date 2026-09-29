@@ -1,4 +1,5 @@
 
+from dataclasses import field
 from django import forms
 from tasks.models import Task, TaskDetails
 
@@ -45,13 +46,27 @@ class StyledFormMixin:
                 field.widget.attrs.update({
                     "class": "space-y-2"  # added space between checkboxes
                 })
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({
+                "class": self.default_classes
+                })
+            elif isinstance(field.widget, forms.PasswordInput):
+                field.widget.attrs.update({
+                "class": self.default_classes,
+                "placeholder": f"Enter {field.label or field_name.lower()}"
+                })
+            elif isinstance(field.widget, forms.EmailInput):
+                field.widget.attrs.update({
+                "class": self.default_classes,
+                "placeholder": f"Enter {field.label.lower()}"
+                })
 
 
 # Django model form 
 class TaskModelForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model  = Task
-        fields = ['title', 'description', 'due_date', 'assigned_to']
+        fields = ['title', 'description', 'due_date', 'assigned_to'] #add assigned_to
         widgets = {
             'due_date': forms.SelectDateWidget,
             'assigned_to': forms.CheckboxSelectMultiple
@@ -77,7 +92,7 @@ class TaskModelForm(StyledFormMixin, forms.ModelForm):
 class TaskDetailModelForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = TaskDetails
-        fields = ['priority', 'notes']
+        fields = ['priority', 'notes', 'asset']
     
     
 
