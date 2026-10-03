@@ -1,4 +1,5 @@
 from django.urls import path
+from core.views import no_permissions
 from tasks.views import (
     manager_dashboard,
     employee_dashboard,
@@ -26,5 +27,6 @@ urlpatterns = [
     # path("update-task/<int:id>/", update_task, name="update-task"),
     path("update-task/<int:id>/", UpdateTask.as_view(), name="update-task"),
     path("delete-task/<int:id>/", delete_task, name="delete-task"),
-    path('dashboard/', dashboard, name='dashboard')
+    path('dashboard/', dashboard, name='dashboard'),
+    path('no-permission/', no_permissions, name='no-permission')
 ]

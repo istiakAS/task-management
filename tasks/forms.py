@@ -34,9 +34,9 @@ class StyledFormMixin:
                 })
             elif isinstance(field.widget, forms.Textarea):
                 field.widget.attrs.update({
-                "class": f"{self.default_classes} overflow-hidden resize-none",  # added overflow-y-auto and resize-none for better UX
-                "placeholder": f"Enter {field.label.lower()}",
-                "rows": 5  # added to define a consistent textarea height
+                    "class": f"{self.default_classes} resize-none",
+                    "placeholder": f"Enter {field.label.lower()}",
+                    "rows": 5
                 })
             elif isinstance(field.widget, forms.SelectDateWidget):
                 field.widget.attrs.update({
@@ -59,6 +59,19 @@ class StyledFormMixin:
                 field.widget.attrs.update({
                 "class": self.default_classes,
                 "placeholder": f"Enter {field.label.lower()}"
+                })
+            elif isinstance(field.widget, forms.FileInput):
+                field.widget.attrs.update({
+                    "class": """
+                    w-full
+                    p-3
+                    bg-white
+                    rounded-lg
+                    border-2
+                    border-gray-300
+                    text-gray-700
+                    cursor-pointer
+                    """
                 })
 
 

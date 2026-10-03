@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 
 
@@ -20,7 +21,7 @@ class Task(models.Model):
     )  #one to many relationship with project model
 
     # assigned_to = models.ManyToManyField(Employee, related_name='tasks')  #many to many relationship with employee model
-    assigned_to = models.ManyToManyField(User, related_name='tasks')
+    assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='tasks')
     title = models.CharField(max_length=250)
     description = models.TextField()
     due_date = models.DateField()
